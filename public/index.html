@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <link rel="shortcut icon" href="images/favicon.ico" />
 
     <title>Firebase</title>
     <style media="screen">
@@ -13,10 +14,7 @@
         margin:0;
         padding:0;        
         min-height: 100vh;
-      }      
-      *{
-        box-sizing: border-box;
-      }
+      }                  
     </style>
     <script>
       // Setup Polymer options
@@ -53,9 +51,16 @@
       })(); 
     </script>
 
-    <link rel="import" href="app.html">           
+    <link rel="import" href="components/polymerfire/firebase-app.html">
+    <link rel="import" href="app.html">               
   </head>
   <body>
+    <firebase-app 
+        id="app"
+        auth-domain="sweltering-fire-9513.firebaseapp.com"
+        database-url="https://sweltering-fire-9513.firebaseio.com"
+        api-key="AIzaSyAidlyZ3BhSU1JRIgILqDFcSWGB6RBGZ5E">
+    </firebase-app> 
     <my-app></my-app>
   </body>
 </html>

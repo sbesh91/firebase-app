@@ -1,0 +1,43 @@
+<link rel="import" href="components/polymer/polymer.html">
+<link rel="import" href="components/polymerfire/firebase-query.html">
+<link rel="import" href="components/polymerfire/firebase-document.html">
+
+<dom-module id="body-fragment">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>        
+        
+        <firebase-document
+            path="/posts"
+            data="{{posts}}">
+        </firebase-document>
+
+        <template 
+            is="dom-repeat" 
+            items={{posts}} 
+            as="post">            
+            <div>{{post}}</div>
+        </template>
+        
+    </template>
+    <script>
+        Polymer({
+            is: 'body-fragment',
+            properties: {
+                posts: {
+                    type: Array,
+                    notify: true
+                },
+            },
+            listeners:{
+                "posts-changed" : "update"
+            },
+            update(){
+                console.log(this.posts);
+            }
+        });
+    </script>
+</dom-module>

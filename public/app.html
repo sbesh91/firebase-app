@@ -1,43 +1,38 @@
 <link rel="import" href="components/polymer/polymer.html">
 <link rel="import" href="components/polymerfire/firebase-auth.html">
-<link rel="import" href="components/polymerfire/firebase-app.html">
-<link rel="import" href="components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="components/iron-icons/iron-icons.html">
-<link rel="import" href="auth-fragment.html">
+<link rel="import" href="head-fragment.html">
 <link rel="import" href="shared-styles.html">
-
-
 
 <dom-module id="my-app">
     <template>
         <style>
             :host {
-                display: block;                
+                display: block;              
+                min-height: 100vh;                  
             }                        
-        </style>        
-        <div>
-            <firebase-app 
-                auth-domain="sweltering-fire-9513.firebaseapp.com"
-                database-url="https://sweltering-fire-9513.firebaseio.com/"
-                api-key="AIzaSyAidlyZ3BhSU1JRIgILqDFcSWGB6RBGZ5E">
-            </firebase-app>
+        </style>                           
 
-            <firebase-auth 
-                id="auth" 
-                user="{{user}}" 
-                status-known="{{statusKnown}}"
-                provider="google" 
-                on-error="handleError">
-            </firebase-auth>                       
-            
-            <paper-icon-button on-tap="signout" icon="icons:power-settings-new"></paper-icon-button>
-                        
+        <firebase-auth 
+            id="auth" 
+            user="{{user}}" 
+            status-known="{{statusKnown}}"
+            provider="google" 
+            on-error="handleError">
+        </firebase-auth>                                   
+
+        <head-fragment
+            auth="[[auth]]">
+        </head-fragment>            
+                            
+        <body-fragment></body-fragment>            
+
+        <template is="dom-if" if={{promptSignIn}}>                
             <auth-fragment
-                user="{{user}}"
-                prompt-sign-in="{{promptSignIn}}"
-                auth="{{auth}}"
-                ></auth-fragment>                              
-        </div>
+                user="[[user]]"
+                prompt-sign-in="[[promptSignIn]]"
+                auth="[[auth]]"
+                ></auth-fragment> 
+        </template>                                     
     </template>
     <script>
         Polymer({
@@ -58,16 +53,29 @@
                 }
             },            
             ready(){
-                this.auth = this.$.auth;
+                this.auth = this.$.auth;                
             },
             _computePrompt(user, statusKnown){
-                return !user && statusKnown;
-            },                                    
-            signout(){
-                this.$.auth.signOut()
-                    .then((response) => {})
-                    .catch((error) => {});
-            },
+                const val = !user && statusKnown;    
+                const that = this;
+                if(val){
+                    this.importHref("auth-fragment.html",(result) => {
+                        that.fire("auth-init",{},{
+                            node: that.$$("auth-fragment")
+                        });
+                    });                
+                }else if(statusKnown){
+                    that.fire("auth-init",{},{
+                        node: that.$$("auth-fragment")
+                    });
+                    this.importHref("body-fragment.html",(result) => {
+                        that.fire("body-init",{},{
+                            node: that.$$("body-fragment")
+                        });
+                    });
+                }  
+                return val;
+            },                                                
             handleError(){
 
             }

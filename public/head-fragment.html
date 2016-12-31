@@ -1,0 +1,49 @@
+<link rel="import" href="components/polymer/polymer.html">
+<link rel="import" href="components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="components/iron-icons/iron-icons.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="head-fragment">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+                display: block;
+            }
+            header{
+                width: 100%;
+                background: var(--main-color);
+                color: #fff;
+                padding:15px 20px;                
+                display: flex;
+                justify-content: space-between;
+            }
+            img{
+                height:40px;
+                width:40px;
+            }
+        </style>
+        <header>
+            <img src="images/manifest/icon-96x96.png" alt="logo">
+            <paper-icon-button on-tap="signout" icon="icons:power-settings-new"></paper-icon-button>        
+        </header>                
+    </template>
+    <script>
+        Polymer({
+            is: 'head-fragment',
+            properties:{
+                user: {
+                    type: Object
+                },
+                auth: { 
+                    type: Object
+                }
+            },
+            signout(){
+                this.auth.signOut()
+                    .then((response) => {})
+                    .catch((error) => {});
+            },
+        });
+    </script>
+</dom-module>
