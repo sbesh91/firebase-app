@@ -1,0 +1,74 @@
+<link rel="import" href="components/polymer/polymer.html">
+<link rel="import" href="components/polymerfire/firebase-document.html">
+<link rel="import" href="components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="components/iron-icons/iron-icons.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="post-fragment">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+                display: flex;
+                justify-content: space-between;
+                position:relative;
+                padding: 5px 10px;
+                border-top: 1px solid var(--border-color);                
+            }
+            #content{
+                display: flex;
+                align-items: center;
+            }
+        </style>                 
+                
+        <div id="content">
+            <firebase-document
+                path="{{postPath}}"
+                data="{{thisPost}}">
+            </firebase-document>   
+            [[post.title]]
+        </div>
+        
+        <template is="dom-if" if={{isExpanded}}>
+            <paper-icon-button 
+                id="contract" 
+                icon="icons:close"
+                on-tap="select"></paper-icon-button>
+        </template>
+        
+        <template is="dom-if" if={{!isExpanded}}>
+            <paper-icon-button 
+                id="expand" 
+                icon="icons:fullscreen"
+                on-tap="home"></paper-icon-button>
+        </template>            
+    </template>
+    <script>
+        Polymer({
+            is: 'post-fragment',
+            properties:{
+                post: {
+                    type: Object
+                },
+                thisPost:{
+                    type: Object
+                },
+                postPath: {
+                    type: String
+                },
+                isExpanded: {
+                    type: Boolean,
+                    value: false                    
+                }                
+            },
+            select(){
+                console.log("expand");
+                this.postPath = `/posts/${this.post.$key}`;
+                this.isExpanded = true;
+            },
+            home(){
+                this.isExpanded = false;
+            }
+        });
+    </script>
+</dom-module>

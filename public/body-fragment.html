@@ -1,9 +1,13 @@
 <link rel="import" href="components/polymer/polymer.html">
 <link rel="import" href="components/polymerfire/firebase-query.html">
-<link rel="import" href="components/polymerfire/firebase-document.html">
+<link rel="import" href="post-fragment.html">
+<link rel="import" href="shared-styles.html">
+
+
 
 <dom-module id="body-fragment">
     <template>
+        <style include="shared-styles"></style>
         <style>
             :host {
                 display: block;
@@ -13,38 +17,34 @@
         <firebase-query
             path="/posts"
             data="{{posts}}">
-        </firebase-query>
+        </firebase-query>        
 
-        <firebase-document
-            path="{{postPath}}"
-            data="{{thisPost}}">
-        </firebase-document>
-        
-        <h2>posts</h2>
         <template 
             is="dom-repeat" 
             items={{posts}} 
             as="post">            
-            <div>{{post.title}}</div>
+            <post-fragment
+                post="[[post]]">
+            </post-fragment>
         </template>
         
-        <firebase-query
+        <!--<firebase-query
             path="/categories"
             data="{{categories}}">
-        </firebase-query>
+        </firebase-query>-->
 
-        <firebase-document
+        <!--<firebase-document
             path="{{categoryPath}}"
             data="{{thisCategory}}">
-        </firebase-document>
+        </firebase-document>-->
 
-        <h2>categories</h2>
+        <!--<h2>categories</h2>
         <template 
             is="dom-repeat" 
             items={{categories}} 
             as="category">            
             <div>{{category.title}}</div>
-        </template>        
+        </template>        -->
     </template>
     <script>
         Polymer({
@@ -52,23 +52,11 @@
             properties: {
                 posts: {
                     type: Array
-                },
-                postPath: {
-                    type: String
-                },
-                thisPost: {
-                    type: Object
-                },
+                },                             
                 categories: {
                     type: Array
-                },
-                categoryPath: {
-                    type: String
-                },
-                thisCategory: {
-                    type: Object
                 }
-            }
+            },            
         });
     </script>
 </dom-module>
