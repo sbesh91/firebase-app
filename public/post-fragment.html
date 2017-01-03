@@ -2,6 +2,9 @@
 <link rel="import" href="components/polymerfire/firebase-document.html">
 <link rel="import" href="components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="components/iron-icons/iron-icons.html">
+<link rel="import" href="components/iron-location/iron-location.html">
+<link rel="import" href="components/neon-animation/neon-animated-pages.html">
+
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="post-fragment">
@@ -20,7 +23,10 @@
                 align-items: center;
             }
         </style>                 
-                
+         <iron-location 
+            path="{{path}}">
+        </iron-location>
+
         <div id="content">
             <firebase-document
                 path="{{postPath}}"
@@ -29,6 +35,10 @@
             [[post.title]]
         </div>
         
+        <!--
+            refactor dom if into elements
+            that are loaded via neon-animation
+        -->
         <template is="dom-if" if={{isExpanded}}>
             <paper-icon-button 
                 id="contract" 
@@ -59,7 +69,10 @@
                 isExpanded: {
                     type: Boolean,
                     value: false                    
-                }                
+                },
+                path:{
+                    type: String
+                }           
             },
             select(){
                 console.log("expand");
