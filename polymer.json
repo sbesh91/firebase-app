@@ -1,0 +1,8 @@
+{
+  "entrypoint": "public/index.html",
+  "shell": "public/app.html",
+  "extraDependencies": [
+    "public/manifest.json",
+    "public/components/webcomponentsjs/webcomponents-lite.min.js"
+  ]
+}

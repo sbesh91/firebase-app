@@ -1,0 +1,23 @@
+{
+  "name": "my-project",
+  "version": "0.0.0",
+  "description": "A starting point for Polymer & Firebase apps",
+  "scripts": {
+    "build": "gulp"
+  },
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "engines": {
+    "node": ">=4.0"
+  },
+  "private": true,
+  "devDependencies": {
+    "del": "^2.2.1",
+    "gulp": "gulpjs/gulp#4.0",
+    "gulp-uglify": "^2.0.0",
+    "css-slam": "^1.2.1",
+    "html-minifier": "^3.2.3",
+    "merge-stream": "^1.0.0",
+    "plylog": "^0.4.0",
+    "polymer-build": "^0.6.0-alpha.3"
+  }
+}
