@@ -18,6 +18,7 @@ const del = require('del');
 const uglify = require("gulp-uglify");
 const cssSlam = require("css-slam");
 const htmlMinifier = require("html-minifier");
+const gulpif = require("gulp-if");
 
 const polymerJsonPath = path.join(process.cwd(), 'polymer.json');
 const polymerJSON = require(polymerJsonPath);
