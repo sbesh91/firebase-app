@@ -23,7 +23,8 @@
             }
         </style>                 
          <iron-location 
-            path="{{path}}">
+            path="{{path}}"
+            hash="{{hash}}">
         </iron-location>
 
         <div id="content">
@@ -71,11 +72,15 @@
                 },
                 path:{
                     type: String
-                }           
+                },
+                hash:{
+                    type: String
+                }             
             },
             select(){
                 console.log("expand");
                 this.postPath = `/posts/${this.post.$key}`;
+                this.hash = this.postPath;
                 this.isExpanded = true;
             },
             home(){
