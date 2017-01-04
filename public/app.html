@@ -18,18 +18,18 @@
             status-known="{{statusKnown}}"
             provider="google" 
             on-error="handleError">
-        </firebase-auth>                                   
+        </firebase-auth>                             
 
         <!--always load the head fragment-->
         <head-fragment
             auth="[[auth]]">
         </head-fragment>            
                             
-        <!--url /-->
-        <body-fragment></body-fragment>            
-
-        <!--url = /login/-->
-        <!--todo maybe auth should be a route and shouldn't load assets for popups because that is heavy-->
+        <template is="dom-if" if={{!promptSignIn}}>
+            <body-fragment></body-fragment>         
+        </template>                   
+        
+        <!--todo maybe auth shouldn't load assets for popups because that is heavy-->
         <template is="dom-if" if={{promptSignIn}}>                
             <auth-fragment
                 user="[[user]]"
@@ -54,6 +54,9 @@
                 },
                 auth: {
                     type: Object
+                },
+                path: {
+                    type: String
                 }
             },            
             ready(){
@@ -63,20 +66,27 @@
                 const val = !user && statusKnown;    
                 const that = this;
                 if(val){
+                    this.path = "/login/";
                     this.importHref("auth-fragment.html",(result) => {
                         that.fire("auth-init",{},{
                             node: that.$$("auth-fragment")
                         });
                     });                
-                }else if(statusKnown){
+                }else if(statusKnown){                    
                     that.fire("auth-init",{},{
                         node: that.$$("auth-fragment")
                     });
-                    this.importHref("body-fragment.html",(result) => {
-                        that.fire("body-init",{},{
-                            node: that.$$("body-fragment")
+
+                    if(user) {
+                        this.path = "/";
+                        this.importHref("body-fragment.html",(result) => {
+                            that.fire("body-init",{},{
+                                node: that.$$("body-fragment")
+                            });
                         });
-                    });
+                    }
+
+                    this.path = "/login/";
                 }  
                 return val;
             },                                                
