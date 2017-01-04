@@ -66,22 +66,10 @@
                 const val = !user && statusKnown;    
                 const that = this;
                 if(val){
-                    this.importHref("auth-fragment.html",(result) => {
-                        that.fire("auth-init",{},{
-                            node: that.$$("auth-fragment")
-                        });
-                    });                
-                }else if(statusKnown){                    
-                    that.fire("auth-init",{},{
-                        node: that.$$("auth-fragment")
-                    });
-
+                    this.importHref("auth-fragment.html");                
+                }else if(statusKnown){                                        
                     if(user) {
-                        this.importHref("body-fragment.html",(result) => {
-                            that.fire("body-init",{},{
-                                node: that.$$("body-fragment")
-                            });
-                        });
+                        this.importHref("body-fragment.html");
                     }                    
                 }  
                 return val;

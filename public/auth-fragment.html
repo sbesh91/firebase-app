@@ -194,12 +194,8 @@
                 }
             },
             listeners: {
-                "iron-form-presubmit" : "login",
-                "auth-init" : "init"              
-            },                  
-            init(){             
-                //this.$$("paper-dialog").toggle();         
-            },       
+                "iron-form-presubmit" : "login"  
+            },                              
             submitForm() {
                 const form = this.$$("#login");
                 if(form.validate())
