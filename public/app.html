@@ -20,12 +20,16 @@
             on-error="handleError">
         </firebase-auth>                                   
 
+        <!--always load the head fragment-->
         <head-fragment
             auth="[[auth]]">
         </head-fragment>            
                             
+        <!--url /-->
         <body-fragment></body-fragment>            
 
+        <!--url = /login/-->
+        <!--todo maybe auth should be a route and shouldn't load assets for popups because that is heavy-->
         <template is="dom-if" if={{promptSignIn}}>                
             <auth-fragment
                 user="[[user]]"

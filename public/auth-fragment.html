@@ -96,26 +96,31 @@
                     name="login"
                     autocomplete="on"> 
                     <paper-input 
-                        required
-                        autocomplete="email"
+                        required                        
                         error-message="Please enter a valid email."
                         pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$" 
+                        id="email"
                         label="Email" 
+                        type="email"
+                        name="email"
+                        autocomplete="email"
                         value="{{email}}">
                     </paper-input>
                     
                     <paper-input 
                         required
-                        char-counter
-                        autocomplete="password"
+                        char-counter                        
                         error-message="Please enter a password longer than 8"
                         minlength="9"
+                        id="password"
+                        autocomplete="current-password"
                         type="password"
                         label="Password" 
+                        name="password"
                         value="{{password}}">
                     </paper-input>
                     
-                    <paper-button on-tap="submitForm" raised>Login</paper-button>                                                        
+                    <paper-button on-tap="submitForm" raised>Login</paper-button>                                                                     
                 </form>                           
 
                 <template is="dom-if" if={{isLogin}}>                        
