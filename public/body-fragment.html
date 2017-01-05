@@ -41,8 +41,9 @@
 
         <neon-animated-pages 
             id="pages"
-            selected="[[selected]]">            
-            <template 
+            selected="[[selected]]">                        
+            <!--refactor into one list element and pass up a selected post-->
+            <!--<template 
                 is="dom-repeat" 
                 items={{posts}} 
                 as="post">            
@@ -50,7 +51,7 @@
                     on-tap="select"
                     post="[[post]]">
                 </mini-post-fragment>   
-            </template>
+            </template>-->
 
             <max-post-fragment 
                 on-tap="home"

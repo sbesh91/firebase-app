@@ -12,7 +12,6 @@
         <style include="shared-styles"></style>
         <style>
             :host {
-                display: block;
                 position: fixed !important;
                 height:100vh;
                 width:100vw;
@@ -20,7 +19,7 @@
                 left:0;
                 background:#fff;                
                 overflow: auto;
-                z-index: 2;
+                z-index: 2;                
             }
         </style>        
         <div>
@@ -45,36 +44,39 @@
                 post:{
                     type: Object
                 },               
-                animationConfig: {
-                    value: function() {
-                    return {
-                        'entry': [
-                            {
-                                name: 'hero-animation',
-                                id: 'hero-back',
-                                toPage: this,
-                                timing: {                                    
-                                    easing: "cubic-bezier(.55,1,.55,1)",
-                                    duration: 300
-                                }
-                            },
-                        ],
-                        'exit': [
-                            {
-                                name: 'hero-animation',
-                                id: 'hero',
-                                fromPage: this
-                            },                       
-                        ]}
-                    }
-                },
-                sharedElements: {
-                    value: function() {
-                        return {
-                            'hero': this,
-                            'hero-back': this
-                        }
-                    }
+                // animationConfig: {
+                //     value: function() {
+                //     return {
+                //         'entry': [
+                //             {
+                //                 name: 'hero-animation',
+                //                 id: 'hero-back',
+                //                 toPage: this,
+                //                 timing: {                                    
+                //                     easing: "cubic-bezier(.55,1,.55,1)",
+                //                     duration: 300
+                //                 }
+                //             },
+                //         ],
+                //         'exit': [
+                //             {
+                //                 name: 'hero-animation',
+                //                 id: 'hero',
+                //                 fromPage: this
+                //             },                       
+                //         ]}
+                //     }
+                // },
+                // sharedElements: {
+                //     value: function() {
+                //         return {
+                //             'hero': this,
+                //             'hero-back': this
+                //         }
+                //     }
+                // },
+                created(){
+                    this.style["display"] = "block";
                 }
             }
         });
