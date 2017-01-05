@@ -25,7 +25,10 @@
         </style>
         <header>
             <img src="images/manifest/icon-96x96.png" alt="logo">
-            <paper-icon-button on-tap="signout" icon="icons:power-settings-new"></paper-icon-button>        
+            
+            <template is="dom-if" if={{user}}>
+                <paper-icon-button on-tap="signout" icon="icons:power-settings-new"></paper-icon-button>        
+            </template>                    
         </header>                
     </template>
     <script>

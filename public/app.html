@@ -10,7 +10,14 @@
                 display: block;              
                 min-height: 100vh;                  
             }                        
-        </style>                           
+        </style>      
+
+        <firebase-app 
+            id="app"
+            auth-domain="sweltering-fire-9513.firebaseapp.com"
+            database-url="https://sweltering-fire-9513.firebaseio.com"
+            api-key="AIzaSyAidlyZ3BhSU1JRIgILqDFcSWGB6RBGZ5E">
+        </firebase-app>                      
 
         <firebase-auth 
             id="auth" 
@@ -19,17 +26,16 @@
             provider="google" 
             on-error="handleError">
         </firebase-auth>                             
-
-        <!--always load the head fragment-->
+        
         <head-fragment
+            user="[[user]]"
             auth="[[auth]]">
         </head-fragment>            
                             
         <template is="dom-if" if={{!promptSignIn}}>
             <body-fragment></body-fragment>         
         </template>                   
-        
-        <!--todo maybe auth shouldn't load assets for popups because that is heavy-->
+                
         <template is="dom-if" if={{promptSignIn}}>                
             <auth-fragment
                 user="[[user]]"
