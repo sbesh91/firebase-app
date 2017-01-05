@@ -1,6 +1,10 @@
 <link rel="import" href="components/polymer/polymer.html">
 <link rel="import" href="components/polymerfire/firebase-query.html">
-<link rel="import" href="post-fragment.html">
+<link rel="import" href="components/polymerfire/firebase-document.html">
+<link rel="import" href="components/iron-location/iron-location.html">
+<link rel="import" href="components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="mini-post-fragment.html">
+<link rel="import" href="max-post-fragment.html">
 <link rel="import" href="shared-styles.html">
 
 
@@ -15,29 +19,49 @@
             }
         </style>        
         
-        <firebase-query
-            path="/posts"
-            data="{{posts}}">
-        </firebase-query>        
-
-        <template 
-            is="dom-repeat" 
-            items={{posts}} 
-            as="post">            
-            <post-fragment
-                post="[[post]]">
-            </post-fragment>
+        <iron-location 
+            path="{{path}}"
+            hash="{{hash}}">
+        </iron-location>
+        
+        
+        <template is="dom-if" if={{!isExpanded}}>
+            <firebase-query
+                path="/posts"
+                data="{{posts}}">
+            </firebase-query>       
         </template>
+        
+        <template is="dom-if" if={{isExpanded}}>
+            <firebase-document
+                path="{{postPath}}"
+                data="{{post}}">
+            </firebase-document>      
+        </template>                     
+
+        <neon-animated-pages 
+            id="pages"
+            selected="[[selected]]">            
+            <template 
+                is="dom-repeat" 
+                items={{posts}} 
+                as="post">            
+                <mini-post-fragment 
+                    on-tap="select"
+                    post="[[post]]">
+                </mini-post-fragment>   
+            </template>
+
+            <max-post-fragment 
+                on-tap="home"
+                post="[[post]]">
+            </max-post-fragment>            
+        </neon-animated-pages>                    
         
         <!--<firebase-query
             path="/categories"
             data="{{categories}}">
-        </firebase-query>-->
-
-        <!--<firebase-document
-            path="{{categoryPath}}"
-            data="{{thisCategory}}">
-        </firebase-document>-->
+        </firebase-query>-->        
 
         <!--<h2>categories</h2>
         <template 
@@ -53,11 +77,55 @@
             properties: {
                 posts: {
                     type: Array
-                },                             
+                },       
+                post: {
+                    type: Object
+                },                      
                 categories: {
                     type: Array
+                },
+                path:{
+                    type: String
+                },
+                hash:{
+                    type: String
+                },
+                postPath: {
+                    type: String
+                },
+                isExpanded: {
+                    type: Boolean,
+                    value: false                    
+                },                              
+                selected:{
+                    type: Number,
+                    computed:"_computeLocation(isExpanded)"
                 }
-            },            
+            },
+            attached(){
+                if(this.post && `/posts/${this.post.$key}` === this.hash){
+                    this.isExpanded = true;
+                }
+            },    
+            _computeLocation(isExpanded){
+                if(isExpanded){
+                    document.querySelector("body").style["overflow"] = "hidden";
+                    return 1;
+                } else {
+                    document.querySelector("body").style["overflow"] = "";
+                    return 0;
+                }
+            },
+            select(){
+                this.postPath = `/posts/${this.post.$key}`;
+                this.hash = this.postPath;
+                this.isExpanded = true;
+            },
+            home(){
+                this.postPath = "";
+                this.hash = "";
+                this.isExpanded = false;
+            }            
         });
     </script>
 </dom-module>
