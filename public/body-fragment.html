@@ -93,8 +93,7 @@
                     nofity: true
                 },
                 isExpanded: {
-                    type: Boolean,
-                    value: false                    
+                    type: Boolean                                  
                 },                              
                 selected:{
                     type: Number,
@@ -109,6 +108,9 @@
                 if(this.hash != ""){
                     this.isExpanded = true;
                     this.postPath = this.hash;
+                } else {
+                    this.isExpanded = false;
+                    this.post = null;
                 }
             },
             "listeners":{
