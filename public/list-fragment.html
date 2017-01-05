@@ -1,0 +1,94 @@
+<link rel="import" href="components/polymer/polymer.html">
+<link rel="import" href="components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="components/neon-animation/animations/hero-animation.html">
+<link rel="import" href="mini-post-fragment.html">
+
+<dom-module id="list-fragment">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <h4 id="heading">Home</h2>
+        <template 
+            is="dom-repeat" 
+            items={{posts}} 
+            as="post">            
+            <mini-post-fragment 
+                post="[[post]]"
+                post-path="{{postPath}}"
+                ref="{{ref}}">
+            </mini-post-fragment>   
+        </template>
+    </template>
+    <script>
+        Polymer({
+            is: 'list-fragment',
+            behaviors: [
+                Polymer.NeonSharedElementAnimatableBehavior,
+                Polymer.NeonAnimationRunnerBehavior,
+                Polymer.NeonAnimatableBehavior
+            ],
+            properties: {
+                posts: {
+                    type: Array
+                },                       
+                postPath: {
+                    type: String,
+                    notify: true                    
+                },                       
+                ref: {
+                    type: Object,
+                    notify: true             
+                },
+                animationConfig: {
+                    value: function() {
+                        return {
+                            'entry': [
+                                {
+                                    name: 'hero-animation',
+                                    id: 'hero',
+                                    toPage: this,
+                                    timing: {                                    
+                                        easing: "cubic-bezier(.55,1,.55,1)",
+                                        duration: 300
+                                    }
+                                },
+                            ],
+                            'exit': [
+                                {
+                                    name: 'hero-animation',
+                                    id: 'hero-back',
+                                    fromPage: this
+                                },                       
+                            ]
+                        }
+                    }
+                },
+                sharedElements: {
+                    value: function() {
+                        return {
+                            'hero': this.$.heading,
+                            'hero-back': this.$.heading
+                        }
+                    }
+                }
+            },
+            "listeners":{
+                "ref-changed": "_refChanged"
+            },            
+            _refChanged(newValue, oldValue){
+                if(!newValue) {
+                    return;
+                }
+                this.sharedElements = {
+                    'hero': this.ref,
+                    'hero-back': this.ref
+                }
+            }
+        });
+    </script>
+</dom-module>

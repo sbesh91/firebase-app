@@ -27,6 +27,7 @@
                 [[post.title]]
             </h2>
             <paper-icon-button 
+                on-tap="home"
                 id="contract" 
                 icon="icons:close"
                 ></paper-icon-button>
@@ -43,42 +44,46 @@
             properties: {  
                 post:{
                     type: Object
+                },                            
+                postPath: {
+                    type: String,
+                    notify: true                    
+                },
+                animationConfig: {
+                    value: function() {
+                    return {
+                        'entry': [
+                            {
+                                name: 'hero-animation',
+                                id: 'hero-back',
+                                toPage: this,
+                                timing: {                                    
+                                    easing: "cubic-bezier(.55,1,.55,1)",
+                                    duration: 300
+                                }
+                            },
+                        ],
+                        'exit': [
+                            {
+                                name: 'hero-animation',
+                                id: 'hero',
+                                fromPage: this
+                            },                       
+                        ]}
+                    }
+                },
+                sharedElements: {
+                    value: function() {
+                        return {
+                            'hero': this,
+                            'hero-back': this
+                        }
+                    }
                 },               
-                // animationConfig: {
-                //     value: function() {
-                //     return {
-                //         'entry': [
-                //             {
-                //                 name: 'hero-animation',
-                //                 id: 'hero-back',
-                //                 toPage: this,
-                //                 timing: {                                    
-                //                     easing: "cubic-bezier(.55,1,.55,1)",
-                //                     duration: 300
-                //                 }
-                //             },
-                //         ],
-                //         'exit': [
-                //             {
-                //                 name: 'hero-animation',
-                //                 id: 'hero',
-                //                 fromPage: this
-                //             },                       
-                //         ]}
-                //     }
-                // },
-                // sharedElements: {
-                //     value: function() {
-                //         return {
-                //             'hero': this,
-                //             'hero-back': this
-                //         }
-                //     }
-                // },
-                created(){
-                    this.style["display"] = "block";
-                }
-            }
+            },
+            home(){
+                this.postPath = undefined;                    
+            }     
         });
     </script>
 </dom-module>

@@ -1,8 +1,4 @@
 <link rel="import" href="components/polymer/polymer.html">
-<link rel="import" href="components/neon-animation/neon-shared-element-animatable-behavior.html">
-<link rel="import" href="components/neon-animation/neon-animation-runner-behavior.html">
-<link rel="import" href="components/neon-animation/neon-animatable-behavior.html">
-<link rel="import" href="components/neon-animation/animations/hero-animation.html">
 <link rel="import" href="components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="components/iron-icons/iron-icons.html">
 <link rel="import" href="shared-styles.html">
@@ -25,58 +21,36 @@
             }
         </style>
         <div id="content">
-            <div id="title">[[post.title]]</div>
-            
+            <div id="title">                
+                <div>[[post.title]]</div>
+            </div>            
             <paper-icon-button 
+                on-tap="select"
                 id="expand" 
-                icon="icons:expand"
+                icon="icons:fullscreen"
                 ></paper-icon-button>
         </div>       
     </template>
     <script>
         Polymer({
-            is: 'mini-post-fragment',
-            behaviors: [
-                Polymer.NeonSharedElementAnimatableBehavior,
-                Polymer.NeonAnimationRunnerBehavior,
-                Polymer.NeonAnimatableBehavior
-            ],
+            is: 'mini-post-fragment',            
             properties: {      
                 post:{
                     type: Object
                 },     
-                // animationConfig: {
-                //     value: function() {
-                //     return {
-                //         'entry': [
-                //             {
-                //                 name: 'hero-animation',
-                //                 id: 'hero',
-                //                 toPage: this,
-                //                 timing: {                                    
-                //                     easing: "cubic-bezier(.55,1,.55,1)",
-                //                     duration: 300
-                //                 }
-                //             },
-                //         ],
-                //         'exit': [
-                //             {
-                //                 name: 'hero-animation',
-                //                 id: 'hero-back',
-                //                 fromPage: this
-                //             },                       
-                //         ]}
-                //     }
-                // },
-                // sharedElements: {
-                //     value: function() {
-                //         return {
-                //             'hero': this,
-                //             'hero-back': this
-                //         }
-                //     }
-                // }
+                postPath:{
+                    type: String,
+                    notify: true
+                },
+                ref:{
+                    type:Object,
+                    notify:true
+                },               
             },            
+            select(){
+                this.ref = this; 
+                this.postPath = `/posts/${this.post.$key}`;                               
+            }            
         });
     </script>
 </dom-module>

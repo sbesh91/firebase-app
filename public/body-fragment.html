@@ -3,7 +3,7 @@
 <link rel="import" href="components/polymerfire/firebase-document.html">
 <link rel="import" href="components/iron-location/iron-location.html">
 <link rel="import" href="components/neon-animation/neon-animated-pages.html">
-<link rel="import" href="mini-post-fragment.html">
+<link rel="import" href="list-fragment.html">
 <link rel="import" href="max-post-fragment.html">
 <link rel="import" href="shared-styles.html">
 
@@ -25,14 +25,14 @@
         </iron-location>
         
         
-        <template is="dom-if" if={{!isExpanded}}>
+        <!--<template is="dom-if" restamp="true" if={{!isExpanded}}>-->
             <firebase-query
                 path="/posts"
                 data="{{posts}}">
             </firebase-query>       
-        </template>
+        <!--</template>-->
         
-        <template is="dom-if" if={{isExpanded}}>
+        <template is="dom-if" restamp="true" if={{isExpanded}}>
             <firebase-document
                 path="{{postPath}}"
                 data="{{post}}">
@@ -41,22 +41,18 @@
 
         <neon-animated-pages 
             id="pages"
-            selected="[[selected]]">                        
-            <!--refactor into one list element and pass up a selected post-->
-            <!--<template 
-                is="dom-repeat" 
-                items={{posts}} 
-                as="post">            
-                <mini-post-fragment 
-                    on-tap="select"
-                    post="[[post]]">
-                </mini-post-fragment>   
-            </template>-->
+            selected="[[selected]]">   
+
+            <list-fragment 
+                posts="[[posts]]"
+                post-path="{{postPath}}">
+            </list-fragment>
 
             <max-post-fragment 
-                on-tap="home"
-                post="[[post]]">
+                post="[[post]]"
+                post-path="{{postPath}}">
             </max-post-fragment>            
+
         </neon-animated-pages>                    
         
         <!--<firebase-query
@@ -77,10 +73,11 @@
             is: 'body-fragment',
             properties: {
                 posts: {
-                    type: Array
+                    type: Array                    
                 },       
                 post: {
-                    type: Object
+                    type: Object,
+                    notify: true
                 },                      
                 categories: {
                     type: Array
@@ -92,7 +89,8 @@
                     type: String
                 },
                 postPath: {
-                    type: String
+                    type: String,
+                    nofity: true
                 },
                 isExpanded: {
                     type: Boolean,
@@ -100,33 +98,35 @@
                 },                              
                 selected:{
                     type: Number,
-                    computed:"_computeLocation(isExpanded)"
+                    computed:"_computeLocation(isExpanded, post)"
+                },                       
+                ref: {
+                    type: Object,
+                    notify: true                    
                 }
             },
             attached(){
-                if(this.post && `/posts/${this.post.$key}` === this.hash){
+                if(this.hash != ""){
                     this.isExpanded = true;
+                    this.postPath = this.hash;
                 }
-            },    
-            _computeLocation(isExpanded){
-                if(isExpanded){
+            },
+            "listeners":{
+                "post-path-changed": "_pathChanged",
+            },  
+            _pathChanged(){
+                this.isExpanded = this.postPath !== undefined;
+                this.hash = this.isExpanded ? this.postPath : "";
+            },
+            _computeLocation(isExpanded, post){
+                if(isExpanded && post){
                     document.querySelector("body").style["overflow"] = "hidden";
                     return 1;
                 } else {
                     document.querySelector("body").style["overflow"] = "";
                     return 0;
                 }
-            },
-            select(){
-                this.postPath = `/posts/${this.post.$key}`;
-                this.hash = this.postPath;
-                this.isExpanded = true;
-            },
-            home(){
-                this.postPath = "";
-                this.hash = "";
-                this.isExpanded = false;
-            }            
+            }         
         });
     </script>
 </dom-module>
