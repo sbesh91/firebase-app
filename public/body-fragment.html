@@ -24,7 +24,6 @@
             hash="{{hash}}">
         </iron-location>
         
-        
         <!--<template is="dom-if" restamp="true" if={{!isExpanded}}>-->
             <firebase-query
                 path="/posts"
@@ -42,17 +41,15 @@
         <neon-animated-pages 
             id="pages"
             selected="[[selected]]">   
-<!--to remove some of the two way binding maybe assign the id's to each post of the post url-->
             <list-fragment 
                 posts="[[posts]]"
-                post-path="{{postPath}}">
+                post-path="[[hash]]">
             </list-fragment>
 
             <max-post-fragment 
                 post="[[post]]"
                 post-path="{{postPath}}">
             </max-post-fragment>            
-
         </neon-animated-pages>                    
         
         <!--<firebase-query
@@ -98,11 +95,7 @@
                 selected:{
                     type: Number,
                     computed:"_computeLocation(isExpanded, post)"
-                },                       
-                ref: {
-                    type: Object,
-                    notify: true                    
-                }
+                },                                        
             },
             attached(){
                 if(this.hash != ""){
@@ -116,9 +109,10 @@
             "listeners":{
                 "post-path-changed": "_pathChanged",
             },  
-            _pathChanged(){
-                this.isExpanded = this.postPath !== undefined;
-                this.hash = this.isExpanded ? this.postPath : "";
+            _pathChanged(newValue, oldValue){
+                this.postPath = newValue.detail.value;
+                this.isExpanded = this.postPath !== "";
+                this.hash = this.postPath;                            
             },
             _computeLocation(isExpanded, post){
                 if(isExpanded && post){

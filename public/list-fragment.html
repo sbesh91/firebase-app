@@ -2,8 +2,10 @@
 <link rel="import" href="components/neon-animation/neon-shared-element-animatable-behavior.html">
 <link rel="import" href="components/neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="components/neon-animation/neon-animatable-behavior.html">
-<link rel="import" href="components/neon-animation/animations/hero-animation.html">
-<link rel="import" href="mini-post-fragment.html">
+<link rel="import" href="components/neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="components/iron-icons/iron-icons.html">
+<link rel="import" href="custom-hero-animation.html">
 
 <dom-module id="list-fragment">
     <template>
@@ -11,17 +13,37 @@
             :host {
                 display: block;
             }
+            .content {
+                display: flex;
+                justify-content: space-between;
+                position:relative;
+                padding: 5px 10px;
+                border-top: 1px solid var(--border-color);                
+            }
         </style>
         <h4 id="heading">Home</h2>
+
         <template 
             is="dom-repeat" 
             items={{posts}} 
-            as="post">            
-            <mini-post-fragment 
+            as="post"
+            initialCount="3">            
+            <!--<mini-post-fragment 
+                id="[[post.$key]]"
                 post="[[post]]"
-                post-path="{{postPath}}"
-                ref="{{ref}}">
-            </mini-post-fragment>   
+                post-path="{{postPath}}">
+            </mini-post-fragment>   -->
+            <div class="content" id="[[post.$key]]">
+                <div>                
+                    <div>[[post.title]]</div>
+                </div>            
+                <paper-icon-button 
+                    data-key$="[[post.$key]]"
+                    on-tap="select"
+                    id="expand" 
+                    icon="icons:fullscreen"
+                    ></paper-icon-button>
+            </div>            
         </template>
     </template>
     <script>
@@ -40,27 +62,24 @@
                     type: String,
                     notify: true                    
                 },                       
-                ref: {
-                    type: Object,
-                    notify: true             
+                hash: {
+                    type: String          
                 },
                 animationConfig: {
                     value: function() {
                         return {
                             'entry': [
                                 {
-                                    name: 'hero-animation',
-                                    id: 'hero',
-                                    toPage: this,
-                                    timing: {                                    
-                                        easing: "cubic-bezier(.55,1,.55,1)",
-                                        duration: 300
+                                    name:"fade-in-animation",
+                                    node:this,
+                                    timing:{
+                                        duration:400
                                     }
-                                },
+                                }
                             ],
                             'exit': [
                                 {
-                                    name: 'hero-animation',
+                                    name: 'custom-hero-animation',
                                     id: 'hero-back',
                                     fromPage: this
                                 },                       
@@ -70,24 +89,17 @@
                 },
                 sharedElements: {
                     value: function() {
-                        return {
-                            'hero': this.$.heading,
+                        return {                            
                             'hero-back': this.$.heading
                         }
                     }
                 }
-            },
-            "listeners":{
-                "ref-changed": "_refChanged"
             },            
-            _refChanged(newValue, oldValue){
-                if(!newValue) {
-                    return;
-                }
+            select(event){                                        
                 this.sharedElements = {
-                    'hero': this.ref,
-                    'hero-back': this.ref
+                    'hero-back': this.$$(`#${event.target.dataset.key}`)
                 }
+                this.postPath = `/posts/${event.target.dataset.key}`;
             }
         });
     </script>

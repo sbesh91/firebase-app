@@ -2,9 +2,10 @@
 <link rel="import" href="components/neon-animation/neon-shared-element-animatable-behavior.html">
 <link rel="import" href="components/neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="components/neon-animation/neon-animatable-behavior.html">
-<link rel="import" href="components/neon-animation/animations/hero-animation.html">
+<link rel="import" href="components/neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="components/iron-icons/iron-icons.html">
+<link rel="import" href="custom-hero-animation.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="max-post-fragment">
@@ -54,7 +55,7 @@
                     return {
                         'entry': [
                             {
-                                name: 'hero-animation',
+                                name: 'custom-hero-animation',
                                 id: 'hero-back',
                                 toPage: this,
                                 timing: {                                    
@@ -65,24 +66,25 @@
                         ],
                         'exit': [
                             {
-                                name: 'hero-animation',
-                                id: 'hero',
-                                fromPage: this
-                            },                       
+                                name:"fade-out-animation",
+                                node:this,
+                                timing:{
+                                    duration:400
+                                }
+                            }                   
                         ]}
                     }
                 },
                 sharedElements: {
                     value: function() {
                         return {
-                            'hero': this,
                             'hero-back': this
                         }
                     }
                 },               
             },
             home(){
-                this.postPath = undefined;                    
+                this.postPath = "";                    
             }     
         });
     </script>
