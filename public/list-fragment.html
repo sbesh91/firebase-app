@@ -22,17 +22,12 @@
             }
         </style>
         <h4 id="heading">Home</h2>
-
+        
         <template 
             is="dom-repeat" 
             items={{posts}} 
             as="post"
             initialCount="3">            
-            <!--<mini-post-fragment 
-                id="[[post.$key]]"
-                post="[[post]]"
-                post-path="{{postPath}}">
-            </mini-post-fragment>   -->
             <div class="content" id="[[post.$key]]">
                 <div>                
                     <div>[[post.title]]</div>
@@ -95,11 +90,16 @@
                     }
                 }
             },            
-            select(event){                                        
-                this.sharedElements = {
-                    'hero-back': this.$$(`#${event.target.dataset.key}`)
+            select(event){              
+                let target = event.target;
+                if(event.target.id === "icon")                          
+                {
+                    target = event.target.parentElement;
                 }
-                this.postPath = `/posts/${event.target.dataset.key}`;
+                this.sharedElements = {
+                    'hero-back': this.$$(`#${target.dataset.key}`)
+                }
+                this.postPath = `/posts/${target.dataset.key}`;
             }
         });
     </script>

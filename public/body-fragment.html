@@ -24,12 +24,10 @@
             hash="{{hash}}">
         </iron-location>
         
-        <!--<template is="dom-if" restamp="true" if={{!isExpanded}}>-->
-            <firebase-query
-                path="/posts"
-                data="{{posts}}">
-            </firebase-query>       
-        <!--</template>-->
+        <firebase-query
+            path="/posts"
+            data="{{posts}}">
+        </firebase-query>       
         
         <template is="dom-if" restamp="true" if={{isExpanded}}>
             <firebase-document
@@ -43,7 +41,7 @@
             selected="[[selected]]">   
             <list-fragment 
                 posts="[[posts]]"
-                post-path="[[hash]]">
+                post-path="{{postPath}}">
             </list-fragment>
 
             <max-post-fragment 
@@ -63,7 +61,7 @@
             items={{categories}} 
             as="category">            
             <div>{{category.title}}</div>
-        </template>        -->
+        </template>-->
     </template>
     <script>
         Polymer({
@@ -73,7 +71,7 @@
                     type: Array                    
                 },       
                 post: {
-                    type: Object,
+                    type: Object,                    
                     notify: true
                 },                      
                 categories: {
@@ -87,6 +85,7 @@
                 },
                 postPath: {
                     type: String,
+                    observer:"_watchPostPath",
                     nofity: true
                 },
                 isExpanded: {
@@ -105,15 +104,12 @@
                     this.isExpanded = false;
                     this.post = null;
                 }
-            },
-            "listeners":{
-                "post-path-changed": "_pathChanged",
-            },  
-            _pathChanged(newValue, oldValue){
-                this.postPath = newValue.detail.value;
+            },            
+            _watchPostPath(newValue, oldValue){
+                this.postPath = newValue;
                 this.isExpanded = this.postPath !== "";
-                this.hash = this.postPath;                            
-            },
+                this.hash = this.postPath;                   
+            },               
             _computeLocation(isExpanded, post){
                 if(isExpanded && post){
                     document.querySelector("body").style["overflow"] = "hidden";

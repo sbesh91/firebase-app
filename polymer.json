@@ -9,6 +9,7 @@
     "public/images/*",
     "public/images/manifest/*",
     "public/manifest.json",
-    "public/components/webcomponentsjs/webcomponents-lite.min.js"
+    "public/components/webcomponentsjs/webcomponents-lite.min.js",
+    "public/components/web-animations-js/web-animations-next-lite.min.js.map"
   ]
 }
