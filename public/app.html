@@ -25,7 +25,12 @@
             status-known="{{statusKnown}}"
             provider="google" 
             on-error="handleError">
-        </firebase-auth>                             
+        </firebase-auth>     
+
+        <firebase-document 
+            path="/users/{{user.uid}}"
+            data="{{dbuser}}">
+        </firebase-document>
         
         <head-fragment
             user="[[user]]"
@@ -38,7 +43,7 @@
                 
         <template is="dom-if" if={{promptSignIn}}>                
             <auth-fragment
-                user="[[user]]"
+                user="[[user]]"                
                 prompt-sign-in="[[promptSignIn]]"
                 auth="[[auth]]"
                 ></auth-fragment> 
@@ -50,6 +55,10 @@
             properties: {
                 user: {
                     type: Object
+                },
+                dbuser:{
+                    type: Object,
+                    notify: true
                 },
                 statusKnown:{
                     type: Boolean             

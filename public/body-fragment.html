@@ -14,8 +14,7 @@
         <style include="shared-styles"></style>
         <style>
             :host {
-                display: flex;
-                flex-direction: column;
+                display: block;
             }
         </style>        
         
@@ -35,7 +34,7 @@
                 data="{{post}}">
             </firebase-document>      
         </template>                     
-
+<!--find a way to keep scroll position when going to a post-->
         <neon-animated-pages 
             id="pages"
             selected="[[selected]]">   
@@ -95,7 +94,11 @@
                 selected:{
                     type: Number,
                     computed:"_computeLocation(isExpanded, post)"
-                },                                        
+                },       
+                scroll:{
+                    type: Number,
+                    value: 0
+                }                                 
             },
             attached(){
                 if(this.hash != ""){
@@ -115,7 +118,7 @@
                 if(isExpanded && post){
                     document.querySelector("body").style["overflow"] = "hidden";
                     return 1;
-                } else {
+                } else {                    
                     document.querySelector("body").style["overflow"] = "";
                     return 0;
                 }

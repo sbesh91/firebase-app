@@ -2,6 +2,7 @@
 <link rel="import" href="components/paper-button/paper-button.html">
 <link rel="import" href="components/paper-input/paper-input.html">
 <link rel="import" href="components/iron-form/iron-form.html">
+<link rel="import" href="components/polymerfire/firebase-document.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="auth-fragment">
@@ -57,6 +58,11 @@
                 color:#fff;
             }            
         </style>                
+        <firebase-document 
+            path="/users/{{uid}}"
+            data="{{dbuser}}">
+        </firebase-document>
+
         <h2 class="center">                        
             <template is="dom-if" if={{isLogin}}>
                 Login
@@ -65,6 +71,7 @@
                 Create Account
             </template>                                                
         </h2>
+        
         <div id="authContainer">      
             <div id="buttonToggles">
                 <paper-button 
@@ -90,6 +97,19 @@
                 id="login" 
                 name="login"
                 autocomplete="on"> 
+                <template is="dom-if" if={{!isLogin}}>         
+                    <paper-input 
+                        required                        
+                        error-message="Please enter a username."                    
+                        id="username"
+                        label="Username" 
+                        type="username"
+                        name="username"
+                        autocomplete="username"
+                        value="{{username}}">
+                    </paper-input>
+                </template>
+
                 <paper-input 
                     required                        
                     error-message="Please enter a valid email."
@@ -176,6 +196,13 @@
                 user: {
                     type: Object
                 },    
+                dbuser: {
+                    type: Object,
+                    notify: true
+                },
+                uid:{
+                    type: String
+                },
                 password: {
                     type: String                    
                 },
@@ -210,15 +237,25 @@
                 event.preventDefault();
                 if(this.isLogin){
                     this.auth.signInWithEmailAndPassword(this.email,this.password)
-                        .then((response) => {})
+                        .then((response) => {
+                            //create user here
+                        })
                         .catch((error) => {});
                 } else {
                     this.create();
                 }
             },
             create(){
+                let that = this;
                 this.auth.createUserWithEmailAndPassword(this.email,this.password)
-                    .then((response) => {})
+                    .then(function(response) {
+                        that.uid = response.uid;                        
+                        that.dbuser = {
+                            uid: response.uid,
+                            email: response.email,
+                            username: that.username
+                        };     
+                    })
                     .catch((error) => {});
             },
             signin(){
