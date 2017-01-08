@@ -1,0 +1,117 @@
+<link rel="import" href="components/polymer/polymer.html">
+<link rel="import" href="components/paper-input/paper-input.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="message-thread-fragment">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+                display: block;
+                padding:5px 0 0 5px;
+                border-left: 1px solid var(--border-color);
+                border-bottom: 1px solid var(--border-color);
+            }
+            #reply{
+                display: flex;
+                align-items: flex-end;
+            }
+            paper-input{
+                flex:1 1 auto;
+            }
+            .body{
+                padding:5px 0;
+            }
+            a{
+                color:var(--text-light-color);
+            }
+        </style>
+        
+        
+        <!--<template is="dom-if" if={{hasComments}}>
+            <div id="reply">            
+                <template is="dom-if" if={{!replyEnabled}}>
+                    <a href="javascript:void(0)" on-tap="toggleReply">reply</a>
+                </template>
+                
+                <template is="dom-if" if={{replyEnabled}}>
+                    <paper-input 
+                        label="Reply"
+                        value="{{reply}}">
+                    </paper-input>      
+                    <paper-icon-button on-tap="send" icon="icons:send"></paper-icon-button>            
+                </template>                        
+            </div>
+        </template>        -->
+        
+        <template 
+            is="dom-repeat" 
+            items={{comments}} 
+            as=comment>
+            <div class="body">
+                [[comment.text]]
+            </div>
+
+            <div id="reply">            
+                <template is="dom-if" if={{!replyEnabled}}>
+                    <a href="javascript:void(0)" on-tap="toggleReply">reply</a>
+                </template>
+                
+                <template is="dom-if" if={{replyEnabled}}>
+                    <paper-input 
+                        label="Reply Text"
+                        value="{{reply}}">
+                    </paper-input>      
+                    <paper-icon-button on-tap="send" icon="icons:send"></paper-icon-button>            
+                </template>                        
+            </div>    
+
+            <message-thread-fragment 
+                comments="{{comment.comments}}">
+            </message-thread-fragment>                        
+        </template>                  
+    </template>
+    <script>
+        Polymer({
+            is: 'message-thread-fragment',
+            properties: {
+                comments: {
+                    type: Array
+                },
+                hasComments: {
+                    type: Boolean,
+                    computed: "_hasComments(comments)"
+                },
+                user:{
+                    type: Object
+                },
+                reply:{
+                    type: String
+                },
+                postPath:{
+                    type: String
+                },
+                replyEnabled:{
+                    type: Boolean,
+                    value: false
+                }
+            },
+            _hasComments(comments){
+                return comments.length === 0;
+            },
+            toggleReply(){
+                this.replyEnabled = !this.replyEnabled;
+            },
+            send(){
+                this.push("comments",{
+                    uid: this.user,
+                    text: this.reply,
+                    datePosted: new Date(),
+                    comments: []
+                });
+                this.reply = "";
+                this.toggleReply();
+            }
+        });
+    </script>
+</dom-module>

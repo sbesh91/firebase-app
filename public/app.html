@@ -33,7 +33,7 @@
         </head-fragment>            
                             
         <template is="dom-if" if={{!promptSignIn}}>
-            <body-fragment></body-fragment>         
+            <body-fragment user="[[user]]"></body-fragment>         
         </template>                   
                 
         <template is="dom-if" if={{promptSignIn}}>                

@@ -1,11 +1,14 @@
 <link rel="import" href="components/polymer/polymer.html">
+<link rel="import" href="components/polymerfire/firebase-query.html">
 <link rel="import" href="components/neon-animation/neon-shared-element-animatable-behavior.html">
 <link rel="import" href="components/neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="components/neon-animation/neon-animatable-behavior.html">
 <link rel="import" href="components/neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="components/iron-icons/iron-icons.html">
+<link rel="import" href="components/paper-input/paper-input.html">
 <link rel="import" href="custom-hero-animation.html">
+<link rel="import" href="message-thread-fragment.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="max-post-fragment">
@@ -22,8 +25,21 @@
                 overflow: auto;
                 z-index: 2;                
             }
-        </style>        
-        <div>
+            #header{
+                display:flex;
+                justify-content: space-between;
+                padding: 5px 10px;
+            }
+            h2{
+                margin:0;
+            }
+        </style>       
+        <firebase-query
+            path="[[commentPath]]"
+            data="{{comments}}">
+        </firebase-query>  
+
+        <div id="header">            
             <h2>
                 [[post.title]]
             </h2>
@@ -33,6 +49,9 @@
                 icon="icons:close"
                 ></paper-icon-button>
         </div>         
+        <message-thread-fragment
+            comments="{{comments}}">
+        </message-thread-fragment>
     </template>
     <script>
         Polymer({
@@ -44,11 +63,19 @@
             ],
             properties: {  
                 post:{
-                    type: Object
+                    type: Object,
+                    notify: true
                 },                            
                 postPath: {
                     type: String,
                     notify: true                    
+                },
+                comments: {
+                    type: Array
+                },
+                commentPath: {
+                    type: String,
+                    computed: "_commentLocation(postPath)"
                 },
                 animationConfig: {
                     value: function() {
@@ -82,6 +109,9 @@
                         }
                     }
                 },               
+            },
+            _commentLocation(postPath){
+                return `${postPath}/comments`;
             },
             home(){
                 this.postPath = "";                    
