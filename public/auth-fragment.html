@@ -237,10 +237,8 @@
                 event.preventDefault();
                 if(this.isLogin){
                     this.auth.signInWithEmailAndPassword(this.email,this.password)
-                        .then((response) => {
-                            //create user here
-                        })
-                        .catch((error) => {});
+                        .then(function(response) {})
+                        .catch(function(error) {});
                 } else {
                     this.create();
                 }
@@ -256,12 +254,20 @@
                             username: that.username
                         };     
                     })
-                    .catch((error) => {});
+                    .catch(function(error) {});
             },
             signin(){
+                let that = this;
                 this.auth.signInWithPopup()
-                    .then((response) => {})
-                    .catch((error) => {});
+                    .then(function(response) {
+                            that.uid = response.user.uid;                        
+                            that.dbuser = {
+                                uid: response.user.uid,
+                                email: response.user.email,
+                                username: response.user.displayName
+                            };  
+                        })
+                        .catch(function(error) {});
             },
         });
     </script>
