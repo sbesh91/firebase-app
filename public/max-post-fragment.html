@@ -1,5 +1,6 @@
 <link rel="import" href="components/polymer/polymer.html">
 <link rel="import" href="components/polymerfire/firebase-query.html">
+<link rel="import" href="components/polymerfire/firebase-document.html">
 <link rel="import" href="components/neon-animation/neon-shared-element-animatable-behavior.html">
 <link rel="import" href="components/neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="components/neon-animation/neon-animatable-behavior.html">
@@ -30,6 +31,14 @@
                 justify-content: space-between;
                 padding: 5px 10px;
             }
+            #reply{
+                display: flex;
+                align-items: flex-end;
+                margin-left:5px;
+            }
+            paper-input{
+                flex:1 1 auto;
+            }
             h2{
                 margin:0;
             }
@@ -38,6 +47,11 @@
             path="[[commentPath]]"
             data="{{comments}}">
         </firebase-query>  
+
+        <firebase-document
+            path="[[postPath]]"
+            data="{{dbpost}}">            
+        </firebase-document>
 
         <div id="header">            
             <h2>
@@ -49,7 +63,19 @@
                 icon="icons:close"
                 ></paper-icon-button>
         </div>         
+
+        <template is="dom-if" if={{hasComments}}>
+            <div id="reply">                                                            
+                <paper-input 
+                    label="Reply"
+                    value="{{reply}}">
+                </paper-input>      
+                <paper-icon-button on-tap="send" icon="icons:send"></paper-icon-button>                                              
+            </div>
+        </template>
+
         <message-thread-fragment
+            user="[[user]]"
             comments="{{comments}}">
         </message-thread-fragment>
     </template>
@@ -62,10 +88,16 @@
                 Polymer.NeonAnimatableBehavior
             ],
             properties: {  
+                user: {
+                    type: Object
+                },
                 post:{
                     type: Object,
                     notify: true
-                },                            
+                },     
+                dbpost:{
+                    type: Object
+                },                       
                 postPath: {
                     type: String,
                     notify: true                    
@@ -73,9 +105,16 @@
                 comments: {
                     type: Array
                 },
+                reply:{
+                    type: String
+                },
                 commentPath: {
                     type: String,
                     computed: "_commentLocation(postPath)"
+                },
+                hasComments: {
+                    type: Boolean,
+                    computed: "_hasComments(dbpost)"
                 },
                 animationConfig: {
                     value: function() {
@@ -109,12 +148,27 @@
                         }
                     }
                 },               
-            },
+            },     
+            _hasComments(dbpost){
+                return dbpost.comments && dbpost.comments.length === 0;
+            },       
             _commentLocation(postPath){
                 return `${postPath}/comments`;
             },
             home(){
                 this.postPath = "";                    
+            },
+            send(){
+                this.dbpost.comments = [];
+
+                this.push("dbpost.comments",{
+                    uid: this.user.uid,
+                    username: this.user.username,
+                    text: this.reply,
+                    datePosted: new Date().toString()
+                });
+                
+                this.reply = "";                
             }     
         });
     </script>

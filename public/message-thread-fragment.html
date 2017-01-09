@@ -1,4 +1,5 @@
 <link rel="import" href="components/polymer/polymer.html">
+<link rel="import" href="components/polymerfire/firebase-document.html">
 <link rel="import" href="components/paper-input/paper-input.html">
 <link rel="import" href="shared-styles.html">
 
@@ -8,13 +9,17 @@
         <style>
             :host {
                 display: block;
-                padding:5px 0 0 5px;
+                margin:5px 0 0 5px;
+                padding:0 0 5px 5px;
                 border-left: 1px solid var(--border-color);
                 border-bottom: 1px solid var(--border-color);
             }
             #reply{
                 display: flex;
                 align-items: flex-end;
+            }
+            #reply a{
+                font-size: 12px;
             }
             paper-input{
                 flex:1 1 auto;
@@ -27,22 +32,7 @@
             }
         </style>
         
-        
-        <!--<template is="dom-if" if={{hasComments}}>
-            <div id="reply">            
-                <template is="dom-if" if={{!replyEnabled}}>
-                    <a href="javascript:void(0)" on-tap="toggleReply">reply</a>
-                </template>
-                
-                <template is="dom-if" if={{replyEnabled}}>
-                    <paper-input 
-                        label="Reply"
-                        value="{{reply}}">
-                    </paper-input>      
-                    <paper-icon-button on-tap="send" icon="icons:send"></paper-icon-button>            
-                </template>                        
-            </div>
-        </template>-->
+                    
         
         <template 
             is="dom-repeat" 
@@ -52,7 +42,8 @@
                 [[comment.text]]
             </div>
 
-            <div id="reply">            
+            <div id="reply">        
+                <!--make a reply component-->
                 <template is="dom-if" if={{!replyEnabled}}>
                     <a href="javascript:void(0)" on-tap="toggleReply">reply</a>
                 </template>
@@ -65,10 +56,13 @@
                     <paper-icon-button on-tap="send" icon="icons:send"></paper-icon-button>            
                 </template>                        
             </div>    
-
-            <message-thread-fragment 
-                comments="{{comment.comments}}">
-            </message-thread-fragment>                        
+            
+            <template is="dom-if" if={{comment.comments}}>
+                <message-thread-fragment 
+                    user="[[user]]"
+                    comments="{{comment.comments}}">
+                </message-thread-fragment>      
+            </template>                                      
         </template>                  
     </template>
     <script>
@@ -77,11 +71,7 @@
             properties: {
                 comments: {
                     type: Array
-                },
-                hasComments: {
-                    type: Boolean,
-                    computed: "_hasComments(comments)"
-                },
+                },                
                 user:{
                     type: Object
                 },
@@ -95,20 +85,18 @@
                     type: Boolean,
                     value: false
                 }
-            },
-            _hasComments(comments){
-                return comments.length === 0;
-            },
+            },            
             toggleReply(){
                 this.replyEnabled = !this.replyEnabled;
             },
             send(){
                 this.push("comments",{
-                    uid: this.user,
+                    uid: this.user.uid,
+                    username: this.user.username,
                     text: this.reply,
-                    datePosted: new Date(),
-                    comments: []
+                    datePosted: new Date().toString()
                 });
+
                 this.reply = "";
                 this.toggleReply();
             }

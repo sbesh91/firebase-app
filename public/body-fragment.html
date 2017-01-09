@@ -67,6 +67,9 @@
         Polymer({
             is: 'body-fragment',
             properties: {
+                user:{
+                    type: Object
+                },
                 posts: {
                     type: Array                    
                 },       
@@ -94,11 +97,7 @@
                 selected:{
                     type: Number,
                     computed:"_computeLocation(isExpanded, post)"
-                },       
-                scroll:{
-                    type: Number,
-                    value: 0
-                }                                 
+                }                            
             },
             attached(){
                 if(this.hash != ""){
