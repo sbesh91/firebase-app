@@ -10,6 +10,7 @@
 <link rel="import" href="components/paper-input/paper-input.html">
 <link rel="import" href="custom-hero-animation.html">
 <link rel="import" href="message-thread-fragment.html">
+<link rel="import" href="reply-fragment.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="max-post-fragment">
@@ -30,23 +31,17 @@
                 display:flex;
                 justify-content: space-between;
                 padding: 5px 10px;
-            }
-            #reply{
-                display: flex;
-                align-items: flex-end;
-                margin-left:5px;
-            }
-            paper-input{
-                flex:1 1 auto;
-            }
+            }            
             h2{
                 margin:0;
             }
-        </style>       
-        <firebase-query
-            path="[[commentPath]]"
-            data="{{comments}}">
-        </firebase-query>  
+            #topLevelComment{
+                margin:0 0 5px 5px;
+            }
+            #topLevelThread{
+                border:none;
+            }
+        </style>               
 
         <firebase-document
             path="[[postPath]]"
@@ -55,7 +50,7 @@
 
         <div id="header">            
             <h2>
-                [[post.title]]
+                [[dbpost.title]]
             </h2>
             <paper-icon-button 
                 on-tap="home"
@@ -64,20 +59,20 @@
                 ></paper-icon-button>
         </div>         
 
-        <template is="dom-if" if={{hasComments}}>
-            <div id="reply">                                                            
-                <paper-input 
-                    label="Reply"
-                    value="{{reply}}">
-                </paper-input>      
-                <paper-icon-button on-tap="send" icon="icons:send"></paper-icon-button>                                              
-            </div>
-        </template>
-
-        <message-thread-fragment
+        
+        <reply-fragment 
+            id="topLevelComment"
             user="[[user]]"
-            comments="{{comments}}">
-        </message-thread-fragment>
+            comments="{{dbpost.comments}}">                
+        </reply-fragment>        
+        
+        <template is="dom-if" if={{!hasComments}}>
+            <message-thread-fragment
+                id="topLevelThread"
+                user="[[user]]"
+                comments="{{dbpost.comments}}">
+            </message-thread-fragment>
+        </template>            
     </template>
     <script>
         Polymer({
@@ -90,24 +85,15 @@
             properties: {  
                 user: {
                     type: Object
-                },
-                post:{
+                }, 
+                dbpost:{
                     type: Object,
                     notify: true
-                },     
-                dbpost:{
-                    type: Object
                 },                       
                 postPath: {
                     type: String,
                     notify: true                    
-                },
-                comments: {
-                    type: Array
-                },
-                reply:{
-                    type: String
-                },
+                },                                
                 commentPath: {
                     type: String,
                     computed: "_commentLocation(postPath)"
@@ -150,26 +136,14 @@
                 },               
             },     
             _hasComments(dbpost){
-                return dbpost.comments && dbpost.comments.length === 0;
+                return !dbpost.comments || dbpost.comments.length === 0;
             },       
             _commentLocation(postPath){
                 return `${postPath}/comments`;
             },
             home(){
                 this.postPath = "";                    
-            },
-            send(){
-                this.dbpost.comments = [];
-
-                this.push("dbpost.comments",{
-                    uid: this.user.uid,
-                    username: this.user.username,
-                    text: this.reply,
-                    datePosted: new Date().toString()
-                });
-                
-                this.reply = "";                
-            }     
+            },            
         });
     </script>
 </dom-module>
