@@ -47,7 +47,7 @@
             path="[[postPath]]"
             data="{{dbpost}}">            
         </firebase-document>
-
+        
         <div id="header">            
             <h2>
                 [[dbpost.title]]
@@ -59,7 +59,7 @@
                 ></paper-icon-button>
         </div>         
 
-        
+        <!--refactor these two into one element and load it only when the user and db post are set-->
         <reply-fragment 
             id="topLevelComment"
             user="[[user]]"

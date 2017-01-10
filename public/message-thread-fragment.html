@@ -1,5 +1,6 @@
 <link rel="import" href="components/polymer/polymer.html">
 <link rel="import" href="reply-fragment.html">
+<link rel="import" href="comment-vote-fragment.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="message-thread-fragment">
@@ -11,21 +12,28 @@
                 margin:8px 0 8px 10px;                                
             }
 
-            .body{
+            .comment{
+                display: flex;
                 margin: 2px 0;
                 padding:3px 5px 5px 5px ;
                 border-top-left-radius: 2px;
                 border-bottom-left-radius: 2px;
-                transition: transform 200ms cubic-bezier(0.075, 0.82, 0.165, 1);                
+                transition: box-shadow 200ms cubic-bezier(0.075, 0.82, 0.165, 1);                
             }           
-            .body:nth-of-type(2n){
+            .comment:nth-of-type(2n){
                 background: var(--zebra-even);
             }
-            .body:nth-of-type(2n + 1){
+            .comment:nth-of-type(2n + 1){
                 background: var(--zebra-odd);
             }
-            .body:hover{
-                transform: translateX(-5px);
+            .comment:hover{
+                box-shadow: var(--shadow);
+            }
+            .comment.active{
+                box-shadow: var(--shadow);
+            }
+            .body{
+                flex: 1 1 auto;
             }
             .username{
                 font-size: 13px;
@@ -41,14 +49,20 @@
             is="dom-repeat" 
             items={{comments}} 
             as=comment>
-            <div class="body">
-                <a class="username" href="/#/users/{{comment.uid}}">[[comment.username]]</a>
-                <div class="text">[[comment.text]]</div>                
-
-                 <reply-fragment 
-                    user="[[user]]"
-                    comments="{{comment.comments}}">                
-                </reply-fragment>
+            <!--maybe reorganize into a component to hold state-->
+            <div class="comment">
+                <comment-vote-fragment
+                    comment="{{comment}}"
+                    user="[[user]]">                    
+                </comment-vote-fragment>
+                <div class="body">
+                    <a class="username" href="/#/users/{{comment.uid}}">[[comment.username]]</a>
+                    <div class="text">[[comment.text]]</div>                
+                     <reply-fragment 
+                        user="[[user]]"
+                        comments="{{comment.comments}}">                
+                    </reply-fragment>
+                </div>                                
             </div>                                    
 
             <template is="dom-if" if={{comment.comments}}>

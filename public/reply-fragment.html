@@ -29,11 +29,12 @@
             </template>
             
             <template is="dom-if" if={{replyEnabled}}>
+                <paper-icon-button on-tap="toggleReply" icon="close"></paper-icon-button>            
                 <paper-input 
                     label="Reply Text"
                     value="{{reply}}">
                 </paper-input>      
-                <paper-icon-button on-tap="send" icon="icons:send"></paper-icon-button>            
+                <paper-icon-button on-tap="send" icon="send"></paper-icon-button>            
             </template>                        
         </div>    
     </template>
@@ -62,7 +63,7 @@
             send(){
                 if(!this.comments){
                     this.comments = [];
-                }
+                }  
 
                 this.push("comments",{
                     uid: this.user.uid,
