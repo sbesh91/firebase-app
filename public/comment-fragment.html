@@ -1,0 +1,66 @@
+<link rel="import" href="components/polymer/polymer.html">
+<link rel="import" href="reply-fragment.html">
+<link rel="import" href="comment-vote-fragment.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="comment-fragment">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+                display: flex;
+                margin: 2px 0;
+                padding:3px 5px 5px 5px ;
+                border-top-left-radius: 2px;
+                border-bottom-left-radius: 2px;
+                transition: box-shadow 200ms cubic-bezier(0.075, 0.82, 0.165, 1);
+            }
+                           
+            .body{
+                flex: 1 1 auto;
+            }
+            .username{
+                font-size: 13px;
+            }
+            a{
+                color:var(--text-light-color);
+            }
+        </style>
+        
+        <firebase-document 
+            path="[[postPath]]"
+            data="{{comment}}"></firebase-document>
+
+        <comment-vote-fragment                    
+            comment="{{comment}}"
+            user="[[user]]"
+            post-path="[[postPath]]">                    
+        </comment-vote-fragment>
+
+        <div class="body">
+            <a class="username" href="/#/users/{{comment.uid}}">[[comment.username]]</a>
+            <div class="text">[[comment.text]]</div>                
+                <reply-fragment 
+                user="[[user]]"
+                comments="{{comment.comments}}">                
+            </reply-fragment>
+        </div>                                   
+    </template>
+    <script>
+        Polymer({
+            is: 'comment-fragment',
+            properties: {
+                comment: {
+                    type: Object,
+                    notify: true
+                },
+                user:{
+                    type: Object
+                },
+                postPath: {
+                    type: String
+                }
+            }
+        });
+    </script>
+</dom-module>

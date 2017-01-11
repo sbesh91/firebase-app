@@ -15,7 +15,7 @@
         <style>
             :host {
                 display: block;
-            }
+            }            
         </style>        
         
         <iron-location 
@@ -34,11 +34,12 @@
                 data="{{post}}">
             </firebase-document>      
         </template>                     
-<!--find a way to keep scroll position when going to a post-->
+
         <neon-animated-pages 
             id="pages"
             selected="[[selected]]">   
             <list-fragment 
+                style="display:block !important;"
                 posts="[[posts]]"
                 post-path="{{postPath}}">
             </list-fragment>

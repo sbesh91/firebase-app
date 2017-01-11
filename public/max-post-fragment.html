@@ -70,7 +70,8 @@
             <message-thread-fragment
                 id="topLevelThread"
                 user="[[user]]"
-                comments="{{dbpost.comments}}">
+                comments="{{dbpost.comments}}"
+                post-path="{{postPath}}">
             </message-thread-fragment>
         </template>            
     </template>
@@ -121,7 +122,7 @@
                                 name:"fade-out-animation",
                                 node:this,
                                 timing:{
-                                    duration:400
+                                    duration:300
                                 }
                             }                   
                         ]}

@@ -1,6 +1,7 @@
 <link rel="import" href="components/polymer/polymer.html">
 <link rel="import" href="components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="components/iron-icons/iron-icons.html">
+<link rel="import" href="components/polymerfire/firebase-document.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="comment-vote-fragment">
@@ -23,16 +24,30 @@
             #down.active{
                 color:var(--vote-down);
             }
+            #score{
+                width:22px;
+                text-align: center;
+                font-size: 12px;
+            }
         </style>
         
+        <firebase-document 
+            path="[[postPath]]/votes/[[user.uid]]"
+            data="{{vote}}"></firebase-document>        
+        <firebase-document 
+            path="[[postPath]]/total"
+            data="{{total}}"></firebase-document>
+
         <paper-icon-button 
-            class$="[[voteUpStatus]]" 
+            class$="[[_getStatus(1, vote)]]" 
             id="up" 
             icon="arrow-drop-up" 
             on-tap="voteUp"></paper-icon-button>
-            
+
+        <div id="score">[[_displayTotal(total)]]</div>
+
         <paper-icon-button 
-            class$="[[voteDownStatus]]"
+            class$="[[_getStatus(-1, vote)]]"
             id="down" 
             icon="arrow-drop-down" 
             on-tap="voteDown"></paper-icon-button>
@@ -40,37 +55,37 @@
     <script>
         Polymer({
             is: 'comment-vote-fragment',
-            properties: {
+            properties: {                
                 comment: {
                     type: Object,
                     notify: true
+                },       
+                total: {
+                    type: Number
+                },
+                display:{
+                    type: Number,
+                    computed: "_displayTotal(total)"
                 },
                 user: {
                     type: Object
                 },
                 vote:{
-                    type: Number,
-                    computed: "_getVote(comment, user)"
+                    type: Number,                    
                 },
-                voteUpStatus:{
-                    type: String,
-                    computed: "_getStatus(1, vote)"
-                },
-                voteDownStatus:{
-                    type: String,
-                    computed: "_getStatus(-1, vote)"
+                postPath: {
+                    type: String
                 }
-
+            },
+            _displayTotal(total){
+                return isNaN(total) ? 0 : total;
             },
             _getStatus(key, vote){
                 if(key == vote){
-                    return active;
+                    return "active";
                 }else{
                     return ""
                 }
-            },
-            _getVote(comment, user){
-                return comment.votes && comment.votes[this.user.uid] ? comment.votes[this.user.uid] : 0;
             },
             voteDown(){
                 this.cast(-1);
@@ -78,22 +93,28 @@
             voteUp(){
                 this.cast(1);
             },
-            cast(vote){
-                if(!this.comment.votes) {
-                    this.comment.votes = {};
-                }
-
-                if(this.comment.votes[this.user.uid] === vote) {
-                    this.comment.votes[this.user.uid] = 0;
-                } else {
-                    this.comment.votes[this.user.uid] = vote;
+            cast(vote){                      
+                if(!this.voteHistory){
+                    this.comment.voteHistory = [];
                 }
                 
-                if(!this.comment.total) {
-                    this.comment["total"] = 0;
+                let delta = vote;
+                if(this.vote === vote) {
+                    delta = 0 - vote;
+                    this.vote = 0;
+                } else if(this.vote !== 0 && !isNaN(this.total)) {             
+                    delta = vote * 2;       
+                    this.vote = vote;
+                }else{
+                    delta = vote;
+                    this.vote = vote;
+                }
+                
+                if(isNaN(this.total)) {
+                    this.total = 0;
                 }
 
-                this.comment.total += this.comment.votes[this.user.uid];
+                this.total += delta;
             }
         });
     </script>
