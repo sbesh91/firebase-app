@@ -48,11 +48,11 @@
             data="{{dbpost}}">            
         </firebase-document>
         <!--order-by-child="total" figure a way to add this while preserving the index notation on comment lookups-->
-        <firebase-query
-            path="[[postPath]]/comments"
+        <!--<firebase-query
+            path="[[commentPath]]"
             data="{{comments}}"
             >            
-        </firebase-query>
+        </firebase-query>-->
         
         <div id="header">            
             <h2>
@@ -69,14 +69,14 @@
         <reply-fragment 
             id="topLevelComment"
             user="[[user]]"
-            comments="{{comments}}">                
+            comments="{{dbpost.comments}}">                
         </reply-fragment>        
         <!--sort comments before passing them here-->
         <template is="dom-if" if={{!hasComments}}>
             <message-thread-fragment
                 id="topLevelThread"
                 user="[[user]]"
-                comments="{{comments}}"
+                comments="{{dbpost.comments}}"
                 post-path="{{postPath}}">
             </message-thread-fragment>
         </template>            
@@ -94,8 +94,7 @@
                     type: Object
                 }, 
                 dbpost:{
-                    type: Object,                    
-                    notify: true
+                    type: Object
                 },     
                 comments: {
                     type: Object,                    
