@@ -8,7 +8,12 @@
         <style include="shared-styles"></style>
         <style>
             :host {
-                display: block;
+                display: block;         
+                position: fixed;
+                top:0;
+                left:0;
+                right:0;       
+                z-index: 10;
             }
             header{
                 width: 100%;
@@ -17,6 +22,7 @@
                 padding:15px 20px;                
                 display: flex;
                 justify-content: space-between;
+                height:var(--header-height);
             }
             header paper-icon-button{
                 color: #fff !important;

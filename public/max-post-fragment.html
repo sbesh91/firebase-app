@@ -5,12 +5,13 @@
 <link rel="import" href="components/neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="components/neon-animation/neon-animatable-behavior.html">
 <link rel="import" href="components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="components/neon-animation/animations/slide-right-animation.html">
+<link rel="import" href="components/iron-location/iron-location.html">
 <link rel="import" href="components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="components/iron-icons/iron-icons.html">
 <link rel="import" href="components/paper-input/paper-input.html">
+<link rel="import" href="components/paper-spinner/paper-spinner.html">
 <link rel="import" href="custom-hero-animation.html">
-<link rel="import" href="message-thread-fragment.html">
-<link rel="import" href="reply-fragment.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="max-post-fragment">
@@ -19,21 +20,34 @@
         <style>
             :host {
                 position: fixed !important;
-                height:100vh;
+                height:calc(100vh - var(--header-height));
                 width:100vw;
-                top:0;
+                top:var(--header-height) !important;
                 left:0;
                 background:#fff;                
                 overflow: auto;
-                z-index: 2;                
+                z-index: 2;                                
+            }
+            @media screen and (min-width:768px){
+                :host{
+                    top:100px;
+                    width:600px;
+                    height:calc(100% - 200px);                    
+                    margin: auto;
+                    border-radius: 3px;
+                    padding:10px 0 0 15px;
+                    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.4);
+                }                
             }
             #header{
                 display:flex;
                 justify-content: space-between;
-                padding: 5px;
+                align-items: center;
+                padding: 5px;                
             }            
             h2{
                 margin:0;
+                margin-right:auto;
             }
             #topLevelComment{
                 margin:0 0 5px 5px;
@@ -42,6 +56,11 @@
                 border:none;
             }
         </style>               
+
+        <iron-location 
+            path="{{path}}"
+            hash="{{hash}}">
+        </iron-location>
 
         <firebase-document
             path="[[postPath]]"
@@ -54,7 +73,11 @@
             >            
         </firebase-query>-->
         
-        <div id="header">            
+        <div id="header">         
+            <post-vote-fragment
+                user="[[user]]"
+                post-path="[[postPath]]">                    
+            </post-vote-fragment>   
             <h2>
                 [[dbpost.title]]
             </h2>
@@ -65,11 +88,13 @@
                 ></paper-icon-button>
         </div>         
 
+        <paper-spinner id="loader" active></paper-spinner>       
+
         <!--refactor these two into one element and load it only when the user and db post are set-->
         <reply-fragment 
             id="topLevelComment"
             user="[[user]]"
-            comments="{{dbpost.comments}}">                
+            comments="{{dbpost.comments}}">                                             
         </reply-fragment>        
         <!--sort comments before passing them here-->
         <template is="dom-if" if={{!hasComments}}>
@@ -90,6 +115,12 @@
                 Polymer.NeonAnimatableBehavior
             ],
             properties: {  
+                path:{
+                    type: String
+                },
+                hash:{
+                    type: String
+                },
                 user: {
                     type: Object
                 }, 
@@ -131,7 +162,14 @@
                                 name:"fade-out-animation",
                                 node:this,
                                 timing:{
-                                    duration:300
+                                    duration:400
+                                }
+                            },
+                            {
+                                name:"slide-right-animation",
+                                node:this,
+                                timing:{
+                                    duration:400
                                 }
                             }                   
                         ]}
@@ -143,12 +181,21 @@
                             'hero-back': this
                         }
                     }
-                },               
-            },  
+                },              
+            },            
+            _showFinished: function() {                
+                let that = this;
+                this.importHref("reply-fragment.html",function(e) {
+                    that.$.loader.remove();
+                });
+                this.importHref("message-thread-fragment.html",function(e) {
+                    that.$.loader.remove();
+                });
+            },
             _hasComments(dbpost){
                 return !dbpost.comments || dbpost.comments.length === 0;
             },       
-            _commentLocation(postPath){
+            _commentLocation(postPath){               
                 return `${postPath}/comments`;
             },
             home(){

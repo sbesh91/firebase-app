@@ -4,9 +4,8 @@
 <link rel="import" href="components/polymerfire/firebase-document.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="comment-vote-fragment">
+<dom-module id="post-vote-fragment">
     <template>
-        <style include="shared-styles"></style>
         <style>
             :host {                
                 display: flex;
@@ -30,7 +29,6 @@
                 font-size: 12px;
             }
         </style>
-        
         <firebase-document 
             path="[[postPath]]/votes/[[user.uid]]"
             data="{{vote}}"></firebase-document>        
@@ -54,12 +52,8 @@
     </template>
     <script>
         Polymer({
-            is: 'comment-vote-fragment',
-            properties: {                
-                comment: {
-                    type: Object,
-                    notify: true
-                },       
+            is: 'post-vote-fragment',
+            properties: {
                 total: {
                     type: Number
                 },
@@ -93,9 +87,9 @@
             voteUp(){
                 this.cast(1);
             },
-            cast(vote){             
+            cast(vote){      
                 if(!this.voteHistory){
-                    this.comment.voteHistory = [];
+                    this.voteHistory = [];
                 }
 
                 let delta = vote;

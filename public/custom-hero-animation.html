@@ -59,7 +59,8 @@ Configuration:
 
       this._effect = new KeyframeEffect(shared.to, [
         {'transform': 'translate(' + deltaLeft + 'px,' + deltaTop + 'px) scale(' + deltaWidth + ',' + deltaHeight + ')'},
-        {'transform': 'translate(' + deltaLeft + 'px,' + deltaTop/3 + 'px) scale(' + deltaWidth + ',' + deltaHeight + ')'},
+        {'transform': `translate(calc(50% - ${toRect.width/2})px,${deltaTop}px) scale(${deltaWidth},${deltaHeight})`},
+        {'transform': `translate(calc(50% - ${toRect.width/2})px,${deltaTop}px) scale(${1},${deltaHeight})`},
         {'transform': 'none'}
       ], this.timingFromConfig(config));
 

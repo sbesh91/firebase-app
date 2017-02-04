@@ -15,6 +15,7 @@
         <style>
             :host {
                 display: block;
+                padding-top:70px;
             }            
         </style>        
         
@@ -40,11 +41,13 @@
             selected="[[selected]]">   
             <list-fragment 
                 style="display:block !important;"
+                user="[[user]]"
                 posts="[[posts]]"
                 post-path="{{postPath}}">
             </list-fragment>
 
             <max-post-fragment                 
+                id="post"
                 post-path="{{postPath}}"
                 user="[[user]]">
             </max-post-fragment>            
@@ -99,6 +102,9 @@
                     computed:"_computeLocation(isExpanded, post)"
                 }                            
             },
+            listeners:{
+                "iron-select": "_select"
+            },             
             attached(){
                 if(this.hash != ""){
                     this.isExpanded = true;
@@ -107,7 +113,17 @@
                     this.isExpanded = false;
                     this.post = null;
                 }
-            },            
+            },  
+            _select(event, el){
+                switch(el.item.localName){
+                    case "list-fragment":
+                        break;
+                    case "max-post-fragment":
+                        this.$.post._showFinished();
+                        break;
+                    
+                }
+            },          
             _watchPostPath(newValue, oldValue){
                 this.postPath = newValue;
                 this.isExpanded = this.postPath !== "";
