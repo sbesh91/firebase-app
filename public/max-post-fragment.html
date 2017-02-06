@@ -20,13 +20,36 @@
         <style>
             :host {
                 position: fixed !important;
-                height:calc(100vh - var(--header-height));
+                height:100vh;
                 width:100vw;
-                top:var(--header-height) !important;
+                top:0;
                 left:0;
                 background:#fff;                
                 overflow: auto;
-                z-index: 2;                                
+                z-index: 10;                                
+            }           
+            #header{
+                display:flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 5px;  
+                position: fixed;                
+                top:0;     
+                width:100%;   
+                background: #fff;   
+                z-index: 1; 
+                box-shadow: var(--shadow);      
+            }      
+            h2{
+                margin:0;
+                margin-right:auto;
+            }
+            #topLevelComment{
+                padding-top:70px;
+                margin:0 0 5px 5px;
+            }
+            #topLevelThread{
+                border:none;
             }
             @media screen and (min-width:768px){
                 :host{
@@ -36,25 +59,16 @@
                     margin: auto;
                     border-radius: 3px;
                     padding:10px 0 0 15px;
-                    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.4);
+                    box-shadow: var(--deep-shadow);
                 }                
-            }
-            #header{
-                display:flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 5px;                
-            }            
-            h2{
-                margin:0;
-                margin-right:auto;
-            }
-            #topLevelComment{
-                margin:0 0 5px 5px;
-            }
-            #topLevelThread{
-                border:none;
-            }
+                #header{
+                    position:static;
+                    box-shadow: none;
+                }
+                #topLevelComment{
+                    padding-top:0;
+                }
+            }                  
         </style>               
 
         <iron-location 
@@ -62,16 +76,12 @@
             hash="{{hash}}">
         </iron-location>
 
-        <firebase-document
-            path="[[postPath]]"
-            data="{{dbpost}}">            
-        </firebase-document>
+        <!--todo figure out why this is not firing after the first post is loaded-->
         <!--order-by-child="total" figure a way to add this while preserving the index notation on comment lookups-->
-        <!--<firebase-query
+        <firebase-query
             path="[[commentPath]]"
-            data="{{comments}}"
-            >            
-        </firebase-query>-->
+            data="{{comments}}">            
+        </firebase-query>
         
         <div id="header">         
             <post-vote-fragment
@@ -90,18 +100,18 @@
 
         <paper-spinner id="loader" active></paper-spinner>       
 
-        <!--refactor these two into one element and load it only when the user and db post are set-->
         <reply-fragment 
             id="topLevelComment"
             user="[[user]]"
-            comments="{{dbpost.comments}}">                                             
+            comments="{{comments}}">                                             
         </reply-fragment>        
+
         <!--sort comments before passing them here-->
-        <template is="dom-if" if={{!hasComments}}>
+        <template is="dom-if" if={{comments}}>
             <message-thread-fragment
                 id="topLevelThread"
                 user="[[user]]"
-                comments="{{dbpost.comments}}"
+                comments="{{comments}}"
                 post-path="{{postPath}}">
             </message-thread-fragment>
         </template>            
@@ -128,7 +138,7 @@
                     type: Object
                 },     
                 comments: {
-                    type: Object,                    
+                    type: Array,                    
                     notify: true
                 },                       
                 postPath: {
@@ -141,7 +151,7 @@
                 },
                 hasComments: {
                     type: Boolean,
-                    computed: "_hasComments(dbpost)"
+                    computed: "_hasComments(comments)"
                 },
                 animationConfig: {
                     value: function() {
@@ -162,6 +172,7 @@
                                 name:"fade-out-animation",
                                 node:this,
                                 timing:{
+                                    easing: "cubic-bezier(.55,1,.55,1)",
                                     duration:400
                                 }
                             },
@@ -169,6 +180,7 @@
                                 name:"slide-right-animation",
                                 node:this,
                                 timing:{
+                                    easing: "cubic-bezier(.55,1,.55,1)",
                                     duration:400
                                 }
                             }                   
@@ -192,8 +204,8 @@
                     that.$.loader.remove();
                 });
             },
-            _hasComments(dbpost){
-                return !dbpost.comments || dbpost.comments.length === 0;
+            _hasComments(comments){
+                return !comments || comments.length === 0;
             },       
             _commentLocation(postPath){               
                 return `${postPath}/comments`;

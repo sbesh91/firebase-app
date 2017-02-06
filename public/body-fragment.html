@@ -43,20 +43,22 @@
                 style="display:block !important;"
                 user="[[user]]"
                 posts="[[posts]]"
+                post="{{post}}"
                 post-path="{{postPath}}">
             </list-fragment>
 
             <max-post-fragment                 
                 id="post"
                 post-path="{{postPath}}"
+                dbpost="[[post]]"
                 user="[[user]]">
             </max-post-fragment>            
         </neon-animated-pages>                    
         
-        <!--<firebase-query
+        <firebase-query
             path="/categories"
             data="{{categories}}">
-        </firebase-query>-->        
+        </firebase-query>        
 
         <!--<h2>categories</h2>
         <template 
