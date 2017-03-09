@@ -1,17 +1,7 @@
 {
-  "entrypoint": "public/index.html",
-  "shell": "public/app.html",
-  "fragments": [
-    "public/body-fragment.html",
-    "public/auth-fragment.html",
-    "public/reply-fragment.html",
-    "public/message-thread-fragment.html"        
-  ],
-  "extraDependencies": [
-    "public/images/*",
-    "public/images/manifest/*",
-    "public/manifest.json",
-    "public/components/webcomponentsjs/webcomponents-lite.min.js",
-    "public/components/web-animations-js/web-animations-next-lite.min.js.map"
-  ]
+  "lint": {
+    "rules": [
+      "polymer-2"
+    ]
+  }
 }

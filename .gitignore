@@ -3,3 +3,4 @@ public/components/
 build/
 node_modules/
 *.log
+*.zip

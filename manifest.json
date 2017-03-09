@@ -1,0 +1,6 @@
+{
+  "name": "firebase-app",
+  "short_name": "firebase-app",
+  "start_url": "/",
+  "display": "standalone"
+}
